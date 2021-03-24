@@ -6,10 +6,10 @@
             <div class="todo-modal__title">Edit Task</div>
             <span class="close-popUp"><font-awesome-icon
             :icon="['fas', 'times']"
-            v-on:click="$emit('closePopUp')"
+            v-on:click="closePopUp()"
             /></span>
         </div>
-          <form class="todo-modal__form" @submit.prevent="$emit('onEdit', { title, employeeId: todo.employeeId })">
+          <form class="todo-modal__form" @submit.prevent="onEditTask({ title, employeeId: todo.employeeId })">
             <input class="todo-edit__item" placeholder="Editing a task" v-model="title" />
             <button class="btn edit" type="submit">Edit</button>
           </form>
@@ -20,7 +20,7 @@
 
 <script>
 export default {
-  name: 'PopUpItem',
+  name: 'todo-modal',
   props: {
     todo: {
       type: Object
@@ -33,6 +33,14 @@ export default {
   },
   created () {
     this.title = this.todo.title
+  },
+  methods: {
+    closePopUp () {
+      this.$store.dispatch('closePopUp')
+    },
+    onEditTask (todo) {
+      this.$store.dispatch('onEditTask', { title: todo.title, employeeId: todo.employeeId })
+    }
   }
 }
 </script>

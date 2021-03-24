@@ -9,12 +9,12 @@
       <span class="item-action edit"
         ><font-awesome-icon
         :icon="['fas', 'pen']"
-        v-on:click="$emit('edit-Tast', todo)"
+        v-on:click="editTask(todo)"
       /></span>
       <span class="item-action remove"
         ><font-awesome-icon
         :icon="['fas', 'times']"
-        v-on:click="$emit('remove-Tast', todo.employeeId)"
+        v-on:click="removeTast(todo.employeeId)"
       /></span>
     </div>
   </div>
@@ -23,12 +23,21 @@
 <script>
 
 export default {
+  name: 'list-item__container',
   props: {
     todo: {
       type: Object
     },
     index: {
       type: Number
+    }
+  },
+  methods: {
+    editTask (task) {
+      this.$store.dispatch('editTask', { task })
+    },
+    removeTast (employeeId) {
+      this.$store.dispatch('removeTast', { employeeId })
     }
   }
 }

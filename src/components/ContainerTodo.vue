@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="tasks">
     <div class="todo-list__container">
       <div class="todo-list__header-contaner">
         <h2 class="todo-list__title">Tasks</h2>
@@ -12,20 +12,22 @@
       </div>
       <AddTodoItem
         :flagEdit="flagEdit"
-        @is-Open-Edit="isOpenEdit"
         @add-task="addTask"
       />
       <TodoItems
         v-if="currentPageTodos.length"
         v-bind:todos="currentPageTodos"
-        @remove-task="removeTast"
-        @edit-Tast="editTask"
       />
       <p v-if="!currentPageTodos.length" class="todo-list__empty-title">The task list is empty...</p>
       <div class="todo-list__pagination-container">
-        <span v-for="(page, index) in pages" :key="index" @click="setCurrentPage(page)" class="pagination__item">{{page + 1}}</span>
+        <span
+          v-for="(page, index) in pages"
+           :key="index"
+            @click="setCurrentPage(page)"
+            class="pagination__item"
+        >{{page + 1}}</span>
       </div>
-      <PopUpItem v-if="editingTask" @onEdit="onEditTask" @closePopUp="closePopUp" :todo="editingTask"></PopUpItem>
+      <PopUpItem v-if="editingTask" :todo="editingTask"></PopUpItem>
     </div>
   </div>
 </template>
@@ -38,7 +40,7 @@ import PopUpItem from '@/components/PopUpItem.vue'
 import { mapState } from 'vuex'
 
 export default {
-  name: 'Home',
+  name: 'tasks',
   components: {
     TodoItems,
     AddTodoItem,
@@ -87,26 +89,14 @@ export default {
     },
     removeTast (employeeId) {
       this.$store.dispatch('removeTast', { employeeId })
-      if (!this.currentPageTodos.length) this.currentPage = this.currentPage - 1
-    },
-    isOpenEdit () {
-      this.$store.dispatch('openEdit')
+      // if (!this.currentPageTodos.length) this.currentPage = this.currentPage - 1
     },
     addTask (item) {
       this.$store.dispatch('addTask', { task: item })
       this.currentPage = 0
     },
-    editTask (task) {
-      this.$store.dispatch('editTask', { task })
-    },
-    closePopUp () {
-      this.$store.dispatch('closePopUp')
-    },
     setCurrentPage (page) {
       this.currentPage = page
-    },
-    onEditTask (todo) {
-      this.$store.dispatch('onEditTask', { title: todo.title, employeeId: todo.employeeId })
     }
   }
 }

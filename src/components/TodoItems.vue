@@ -5,8 +5,6 @@
     :key="item.id"
     :todo="item"
     :index="index"
-    v-on:remove-Tast="removeTast"
-    v-on:edit-Tast="editTask"
     />
   </div>
 </template>
@@ -15,21 +13,13 @@
 import TodoItem from '@/components/TodoItem.vue'
 
 export default {
-  name: 'TodoItems',
+  name: 'list_contener__items',
   components: {
     TodoItem
   },
   props: {
     todos: {
       type: Array
-    }
-  },
-  methods: {
-    removeTast (employeeId) {
-      this.$emit('remove-task', employeeId)
-    },
-    editTask (index) {
-      this.$emit('edit-Tast', index)
     }
   }
 }

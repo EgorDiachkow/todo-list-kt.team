@@ -1,7 +1,7 @@
 <template>
   <div class="todo-edit__container" >
     <div class="todo-edit add-open" :class="{active:!flagEdit}">
-      <span class="btn action-open" v-on:click="$emit('is-Open-Edit', true)">Add new task</span>
+      <span class="btn action-open" v-on:click="isOpenEdit(true)">Add new task</span>
     </div>
     <div class="todo-edit is-edit" :class="{active:flagEdit}">
       <form @submit.prevent="addTask">
@@ -10,7 +10,7 @@
           <button type="submit" class="btn add-task">Add Card</button>
           <span class="btn close-edit"><font-awesome-icon
           :icon="['fas', 'times']"
-          v-on:click="$emit('is-Open-Edit', false)"
+          v-on:click="isOpenEdit(false)"
           /></span>
         </div>
       </form>
@@ -20,7 +20,7 @@
 
 <script>
 export default {
-  name: 'AddTodoItem',
+  name: 'todo-edit__container',
   props: {
     flagEdit: {
       type: Boolean
@@ -44,6 +44,9 @@ export default {
         this.$emit('is-Open-Edit', false)
         this.title = ''
       }
+    },
+    isOpenEdit () {
+      this.$store.dispatch('openEdit')
     }
   }
 }
