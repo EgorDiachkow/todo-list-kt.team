@@ -87,10 +87,6 @@ export default {
     sortTasks (event) {
       this.$store.dispatch('sortTaks', { way: event.target.value })
     },
-    removeTast (employeeId) {
-      this.$store.dispatch('removeTast', { employeeId })
-      // if (!this.currentPageTodos.length) this.currentPage = this.currentPage - 1
-    },
     addTask (item) {
       this.$store.dispatch('addTask', { task: item })
       this.currentPage = 0
