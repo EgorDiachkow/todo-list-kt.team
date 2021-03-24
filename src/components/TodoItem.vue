@@ -14,7 +14,7 @@
       <span class="item-action remove"
         ><font-awesome-icon
         :icon="['fas', 'times']"
-        v-on:click="$emit('remove-Tast', todo.id)"
+        v-on:click="$emit('remove-Tast', todo.employeeId)"
       /></span>
     </div>
   </div>

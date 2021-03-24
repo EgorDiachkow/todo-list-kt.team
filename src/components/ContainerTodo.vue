@@ -25,7 +25,7 @@
       <div class="todo-list__pagination-container">
         <span v-for="(page, index) in pages" :key="index" @click="setCurrentPage(page)" class="pagination__item">{{page + 1}}</span>
       </div>
-      <PopUpItem v-if="editingTask" @onEdit="onEditTask" :todo="editingTask"></PopUpItem>
+      <PopUpItem v-if="editingTask" @onEdit="onEditTask" @closePopUp="closePopUp" :todo="editingTask"></PopUpItem>
     </div>
   </div>
 </template>
@@ -47,7 +47,8 @@ export default {
   data () {
     return {
       todosInPage: 10,
-      currentPage: 0
+      currentPage: 0,
+      locations: []
     }
   },
   computed: {
@@ -84,8 +85,8 @@ export default {
     sortTasks (event) {
       this.$store.dispatch('sortTaks', { way: event.target.value })
     },
-    removeTast (id) {
-      this.$store.dispatch('removeTast', { id })
+    removeTast (employeeId) {
+      this.$store.dispatch('removeTast', { employeeId })
       if (!this.currentPageTodos.length) this.currentPage = this.currentPage - 1
     },
     isOpenEdit () {
@@ -98,11 +99,14 @@ export default {
     editTask (task) {
       this.$store.dispatch('editTask', { task })
     },
+    closePopUp () {
+      this.$store.dispatch('closePopUp')
+    },
     setCurrentPage (page) {
       this.currentPage = page
     },
-    onEditTask (title) {
-      this.$store.dispatch('onEditTask', { title })
+    onEditTask (todo) {
+      this.$store.dispatch('onEditTask', { title: todo.title, employeeId: todo.employeeId })
     }
   }
 }

@@ -4,12 +4,12 @@
       <div class="todo-modal__content">
         <div class="todo-modal__header">
             <div class="todo-modal__title">Edit Task</div>
-            <!-- <span class="close-popUp"><font-awesome-icon
+            <span class="close-popUp"><font-awesome-icon
             :icon="['fas', 'times']"
             v-on:click="$emit('closePopUp')"
-            /></span> -->
+            /></span>
         </div>
-          <form class="todo-modal__form" @submit.prevent="$emit('onEdit', title)">
+          <form class="todo-modal__form" @submit.prevent="$emit('onEdit', { title, employeeId: todo.employeeId })">
             <input class="todo-edit__item" placeholder="Editing a task" v-model="title" />
             <button class="btn edit" type="submit">Edit</button>
           </form>

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
+import { db } from '../main'
 
 Vue.use(Vuex)
 
@@ -11,13 +11,13 @@ export default new Vuex.Store({
     editingTask: null
   },
   mutations: {
-    addTask (state, task) {
-      state.tasks.push(task.task)
+    addTask (state, { task, employeeId }) {
+      state.tasks.push({ ...task, employeeId })
     },
-    removeTask (state, id) {
+    removeTask (state, employeeId) {
       const tasks = state.tasks.slice(0)
 
-      state.tasks = tasks.filter(item => item.id !== id)
+      state.tasks = tasks.filter(item => item.employeeId !== employeeId)
     },
     openEdit (state) {
       state.flagEdit = !state.flagEdit
@@ -25,8 +25,8 @@ export default new Vuex.Store({
     editTask (state, { task }) {
       state.editingTask = task
     },
-    onEditTask (state, { title }) {
-      const task = state.tasks.find(todo => todo.id === state.editingTask.id)
+    onEditTask (state, { title, employeeId }) {
+      const task = state.tasks.find(todo => todo.employeeId === state.editingTask.employeeId)
 
       task.title = title
       state.editingTask = null
@@ -37,51 +37,70 @@ export default new Vuex.Store({
       if (way === 'Ascending') state.tasks = cloneTasks.sort((a, b) => a.createTime - b.createTime)
       else if (way === 'descending') state.tasks = cloneTasks.sort((a, b) => b.createTime - a.createTime)
     },
-    getTasks (state, { tasks }) {
-      state.tasks = tasks
+    getTasks (state, { data }) {
+      state.tasks = data
+    },
+    closePopUp (state) {
+      state.editingTask = null
     }
   },
   actions: {
-    async addTask ({ commit }, { task }) {
-      const newTask = JSON.stringify(task)
-
-      axios.post('http://localhost:3000/tasks', newTask, {
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8'
-        }
-      })
-        .then((respons) => {
-          const task = respons.data
-          commit('addTask', { task })
-        })
-    },
-    removeTast ({ commit }, { id }) {
-      axios.delete('http://localhost:3000/tasks/' + id)
-        .then(() => {
-          commit('removeTask', id)
-        })
-    },
     editTask ({ commit }, { task }) {
       commit('editTask', { task })
     },
     openEdit ({ commit }) {
       commit('openEdit')
     },
-    onEditTask ({ commit }, { title }) {
-      commit('onEditTask', { title })
-    },
     sortTaks ({ commit }, { way }) {
       commit('sortTasks', { way })
     },
-    async getTasks ({ commit }) {
-      return axios('http://localhost:3000/tasks/', {
-        method: 'GET'
-      })
+    closePopUp ({ commit }) {
+      commit('closePopUp')
+    },
+    async addTask ({ commit }, { task }) {
+      db.collection('tasks').add(task)
         .then((respons) => {
-          const tasks = respons.data
+          const employeeId = respons.id
 
-          commit('getTasks', { tasks })
-          return tasks
+          commit('addTask', { task, employeeId })
+        })
+        .catch((error) => {
+          console.error('Error adding document: ', error)
+        })
+    },
+    async removeTast ({ commit }, { employeeId }) {
+      db.collection('tasks').doc(employeeId).delete().then(() => {
+        commit('removeTask', employeeId)
+      }).catch((error) => {
+        console.error('Error removing document: ', error)
+      })
+    },
+    async onEditTask ({ commit }, { title, employeeId }) {
+      db.collection('tasks').doc(employeeId).update({
+        title
+      }).then(() => {
+        commit('onEditTask', { title, employeeId })
+      })
+    },
+    async getTasks ({ commit }) {
+      db.collection('tasks').get()
+        .then(querySnapshot => {
+          const data = []
+
+          querySnapshot.forEach(doc => {
+            const task = {
+              id: doc.data().id,
+              title: doc.data().title,
+              complited: doc.data().complited,
+              createTime: doc.data().createTime,
+              employeeId: doc.id
+            }
+            data.push(task)
+          })
+          commit('getTasks', { data })
+        })
+        .catch((error) => {
+          console.error('Error get document: ', error)
         })
     }
   }

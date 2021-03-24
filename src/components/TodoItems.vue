@@ -25,8 +25,8 @@ export default {
     }
   },
   methods: {
-    removeTast (id) {
-      this.$emit('remove-task', id)
+    removeTast (employeeId) {
+      this.$emit('remove-task', employeeId)
     },
     editTask (index) {
       this.$emit('edit-Tast', index)
